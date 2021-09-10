@@ -1,13 +1,17 @@
 package com.raoshashwat.lab03;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -18,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView[] views;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    ConstraintLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -30,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tLeft = findViewById(R.id.topleft_text);
         seekBar = findViewById(R.id.seekbar);
         views = new TextView[]{bRight, bLeft, tRight, tLeft};
+        layout = findViewById(R.id.activity_main_layout);
         bRight.setOnClickListener(this);
         bLeft.setOnClickListener(this);
         tRight.setOnClickListener(this);
@@ -38,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor = sharedPreferences.edit();
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
+            int lastProgress;
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b)
             {
@@ -48,13 +55,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStartTrackingTouch(SeekBar seekBar)
             {
-
+                lastProgress = seekBar.getProgress();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar)
             {
-
+                Snackbar snackbar = Snackbar.make(layout, "Font size changed to " + seekBar.getProgress() + "sp", Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO", new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        seekBar.setProgress(lastProgress);
+                        for (TextView x: views)
+                            x.setTextSize(lastProgress);
+                        Snackbar.make(layout, "Font size reverted to " + seekBar.getProgress() + "sp", Snackbar.LENGTH_LONG);
+                    }
+                });
+                snackbar.setActionTextColor(Color.MAGENTA);
+                View snackbarView = snackbar.getView();
+                TextView textView = snackbarView.findViewById(R.id.snackbar_text);
+                textView.setTextColor(Color.WHITE);
+                snackbar.show();
+            }
+        });
+        layout.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View view)
+            {
+                editor.clear().apply();
+                setInitialValues();
+                return false;
             }
         });
         setInitialValues();
