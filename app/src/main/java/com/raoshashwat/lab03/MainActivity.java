@@ -63,6 +63,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         targetText.setText("Make " + rand + " \n" + tLeft.getText() + " + " + tRight.getText() + " + " + bLeft.getText() + " + " + bRight.getText());
     }
 
+    private void win()
+    {
+        targetText.setText("Congratulations! You win!\nClick restart to try again");
+        editor.clear().apply();
+    }
+
     @Override
     protected void onResume()
     {
@@ -74,5 +80,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         editor.clear().apply();
         setInitialValues();
+    }
+
+    public void submit(View view)
+    {
+        int sum = 0;
+        for (TextView v: views)
+        {
+            sum += Integer.parseInt((String) v.getText());
+        }
+        if (sum == rand)
+        {
+            win();
+        }
+        else
+        {
+            targetText.setText("Sorry, that's not correct\nClick restart to try again");
+            editor.clear().apply();
+        }
     }
 }

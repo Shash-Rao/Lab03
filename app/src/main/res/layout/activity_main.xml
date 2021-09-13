@@ -13,9 +13,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/target_text"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/submit"
         app:layout_constraintLeft_toLeftOf="parent"
         android:onClick="restart"/>
+
+    <Button
+        android:id="@+id/submit"
+        android:text="Submit"
+        app:layout_constraintTop_toBottomOf="@id/target_text"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/restart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="submit"/>
 
     <TextView
         android:id="@+id/target_text"
